@@ -1,0 +1,49 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: halloween_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: halloween_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: halloween_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=mysql://root:password@db:3306/halloween_db
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+    command: npm run dev
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: halloween_frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=mysql://root:password@db:3306/halloween_db
+      - NODE_ENV=development
+    depends_on:
+      - db
+    volumes:
+      - ./frontend:/app
+    command: npm run dev:watch
+
+volumes:
+  db_data:
+  redis_data:

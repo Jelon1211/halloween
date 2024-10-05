@@ -1,0 +1,17 @@
+node_modules
+/build
+/dist
+
+/.next/
+/out/
+
+npm-debug.log
+
+.vscode
+.idea
+
+.git
+.gitignore
+
+docker-compose.yml
+.dockerignore
