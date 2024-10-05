@@ -2,9 +2,9 @@
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "./context/UserContext";
+import { useUser } from "../context/UserContext";
 
-export default function Home() {
+export default function Login() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -31,13 +31,12 @@ export default function Home() {
       .replace(/\s+/g, "");
 
     try {
-      const response = await axios.post("http://localhost:8000/route", {
+      const response = await axios.post("http://localhost:8000/login", {
         name: sanitizedFirstName + sanitizedLastName,
       });
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         setUser(sanitizedFirstName + sanitizedLastName);
-
         router.push("/game");
       }
     } catch (error) {
@@ -52,16 +51,6 @@ export default function Home() {
 
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center gap-6">
-      {errorData ? (
-        <div
-          className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <span className="font-medium">{errorData}</span>
-        </div>
-      ) : (
-        ""
-      )}
       <h1 className="text-2xl">Wpisz swoje imię i nazwisko</h1>
       <form onSubmit={handleSubmit} className="w-full flex flex-col">
         <div className="flex px-8">
@@ -98,15 +87,9 @@ export default function Home() {
             className="w-full bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </div>
-        <button
-          type="submit"
-          className="mx-6 my-6 text-xl focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
-        >
-          Zatwierdź
-        </button>
         <div
           className="mx-6 my-6 text-xl text-center text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm py-2.5"
-          onClick={() => router.push("/login")}
+          onClick={handleSubmit}
         >
           Zaloguj
         </div>

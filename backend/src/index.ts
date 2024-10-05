@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
-import mysql from "mysql2";
+import mysql, { RowDataPacket } from "mysql2";
 
 const app: Express = express();
 
@@ -32,7 +32,45 @@ app.post("/route", (req: Request, res: Response) => {
     return res.status(400).json({ error: "Nieprawidłowe dane" });
   }
 
-  res.status(201).json({ message: "Dane zostały przyjęte", name });
+  const insert = `CALL InsertUser(?)`;
+
+  db.query(insert, [name], (err, results) => {
+    if (err) {
+      if (err.code === "ER_DUP_ENTRY") {
+        return res
+          .status(400)
+          .json({ message: "Użytkownik o takiej nazwie już istnieje" });
+      }
+
+      console.error("Błąd podczas wykonywania zapytania:", err);
+      return res
+        .status(500)
+        .json({ error: "Wystąpił błąd wewnętrzny serwera" });
+    }
+
+    res.status(201).json({ message: "Użytkownik został dodany", results });
+  });
+});
+
+app.post("/login", (req: Request, res: Response) => {
+  const { name } = req.body;
+
+  if (!name || typeof name !== "string") {
+    return res.status(400).json({ error: "Nieprawidłowe dane" });
+  }
+
+  const insert = `CALL CheckUser(?)`;
+
+  db.query(insert, [name], (err, results) => {
+    if (err) {
+      console.error("Błąd podczas wykonywania zapytania:", err);
+      return res
+        .status(500)
+        .json({ error: "Wystąpił błąd wewnętrzny serwera" });
+    }
+
+    res.status(200).json({ message: "Użytkownik istnieje", results });
+  });
 });
 
 app.listen(PORT, () => {
