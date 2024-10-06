@@ -4,8 +4,15 @@ import { useRouter } from "next/navigation";
 import { useUser } from "../context/UserContext";
 import axios from "axios";
 
+interface IUser {
+  id: number;
+  name: string;
+  points: number;
+  is_voted: boolean;
+}
+
 export default function Points() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<IUser[]>([]);
 
   const [canVote, setCanVote] = useState<boolean>(true);
 
@@ -21,27 +28,65 @@ export default function Points() {
     }
 
     const getUserData = async () => {
-      const response = axios.get(`http://localhost:8000/points?name=${name}`);
-      const data = await response;
-      const isVoted = data.data.results[0][0].is_voted;
-      if (isVoted !== 0) {
-        setCanVote(false);
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/points?name=${name}`
+        );
+        const data = await response;
+
+        const isVoted = data?.data?.results?.[0]?.[0]?.is_voted;
+        if (isVoted !== 0) {
+          setCanVote(false);
+        }
+      } catch (error) {
+        console.error("Błąd podczas pobierania danych użytkownika:", error);
       }
     };
+
     const getAllUsers = async () => {
-      const response = axios.get(`http://localhost:8000/users`);
-      const data = await response;
-      setUsers(data.data.results[0]);
+      try {
+        const response = await axios.get(`http://localhost:8000/users`);
+        const data = await response;
+
+        const filteredUsers = data?.data?.results?.[0]?.filter(
+          (item: IUser) => item.name !== name
+        );
+        setUsers(filteredUsers || []);
+      } catch (error) {
+        console.error("Błąd podczas pobierania listy użytkowników:", error);
+      }
     };
 
     getUserData();
     getAllUsers();
   }, []);
 
-  const addPoint = () => {
-    const response = axios.post("http://localhost:8000/points", {
-      name: user,
-    });
+  const addPoint = async (clickedName: string) => {
+    try {
+      const response = await axios.post("http://localhost:8000/points", {
+        name: clickedName,
+        user,
+      });
+
+      const getAllUsers = async () => {
+        try {
+          const response = await axios.get(`http://localhost:8000/users`);
+          const data = await response;
+
+          const filteredUsers = data?.data?.results?.[0]?.filter(
+            (item: IUser) => item.name !== user
+          );
+          setUsers(filteredUsers || []);
+        } catch (error) {
+          console.error("Błąd podczas pobierania listy użytkowników:", error);
+        }
+      };
+
+      setCanVote(false);
+      getAllUsers();
+    } catch (error) {
+      console.error("Błąd podczas dodawania punktu:", error);
+    }
   };
 
   return (
@@ -84,7 +129,7 @@ export default function Points() {
                     {canVote ? (
                       <button
                         className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                        onClick={addPoint}
+                        onClick={() => addPoint(item.name)}
                       >
                         <svg
                           className="h-8 w-8 text-green-500"

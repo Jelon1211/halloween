@@ -74,11 +74,11 @@ app.post("/login", (req: Request, res: Response) => {
 });
 
 app.post("/points", (req: Request, res: Response) => {
-  const { name } = req.body;
+  const { name, user } = req.body;
 
-  const insert = `CALL AddPoint(?)`;
+  const insert = `CALL AddPoint(?,?)`;
 
-  db.query(insert, [name], (err, results) => {
+  db.query(insert, [name, user], (err, results) => {
     if (err) {
       console.error("Błąd podczas wykonywania zapytania:", err);
       return res
