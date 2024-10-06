@@ -9,7 +9,7 @@
   z-index: -1000;
   animation: fall linear infinite;
   pointer-events: none;
-  opacity: 0.06;
+  opacity: 0.2;
 }
 
 @keyframes fall {

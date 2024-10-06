@@ -30,13 +30,16 @@ export default function Login() {
       .toLowerCase()
       .replace(/\s+/g, "");
 
+    const sanitizedName = sanitizedFirstName + sanitizedLastName;
+
     try {
       const response = await axios.post("http://localhost:8000/login", {
-        name: sanitizedFirstName + sanitizedLastName,
+        name: sanitizedName,
       });
 
       if (response.status === 200) {
-        setUser(sanitizedFirstName + sanitizedLastName);
+        setUser(sanitizedName);
+        localStorage.setItem("name", sanitizedName);
         router.push("/game");
       }
     } catch (error) {

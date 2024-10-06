@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "./context/UserContext";
 
@@ -12,6 +12,13 @@ export default function Home() {
   const [errorData, setErrorData] = useState<string>("");
   const router = useRouter();
   const { user, setUser } = useUser();
+
+  useEffect(() => {
+    const name = localStorage.getItem("name");
+    if (name) {
+      router.push("/game");
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -30,14 +37,16 @@ export default function Home() {
       .toLowerCase()
       .replace(/\s+/g, "");
 
+    const sanitizedName = sanitizedFirstName + sanitizedLastName;
+
     try {
       const response = await axios.post("http://localhost:8000/route", {
-        name: sanitizedFirstName + sanitizedLastName,
+        name: sanitizedName,
       });
 
       if (response.status === 201) {
-        setUser(sanitizedFirstName + sanitizedLastName);
-
+        setUser(sanitizedName);
+        localStorage.setItem("name", sanitizedName);
         router.push("/game");
       }
     } catch (error) {
