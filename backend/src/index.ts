@@ -73,6 +73,55 @@ app.post("/login", (req: Request, res: Response) => {
   });
 });
 
+app.post("/points", (req: Request, res: Response) => {
+  const { name } = req.body;
+
+  const insert = `CALL AddPoint(?)`;
+
+  db.query(insert, [name], (err, results) => {
+    if (err) {
+      console.error("Błąd podczas wykonywania zapytania:", err);
+      return res
+        .status(500)
+        .json({ error: "Wystąpił błąd wewnętrzny serwera" });
+    }
+
+    res.status(200).json({ message: "Punkt dodany", results });
+  });
+});
+
+app.get("/points", async (req: Request, res: Response) => {
+  const { name } = req.query;
+
+  const canVote = `CALL CheckIsVoted(?)`;
+
+  db.query(canVote, [name], (err, results) => {
+    if (err) {
+      console.error("Błąd podczas wykonywania zapytania:", err);
+      return res
+        .status(500)
+        .json({ error: "Wystąpił błąd wewnętrzny serwera" });
+    }
+
+    res.status(200).json({ message: "Punkt dodany", results });
+  });
+});
+
+app.get("/users", async (req: Request, res: Response) => {
+  const canVote = `CALL GetAllUsers()`;
+
+  db.query(canVote, [], (err, results) => {
+    if (err) {
+      console.error("Błąd podczas wykonywania zapytania:", err);
+      return res
+        .status(500)
+        .json({ error: "Wystąpił błąd wewnętrzny serwera" });
+    }
+
+    res.status(200).json({ message: "All users", results });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Serwer działa na porcie ${PORT}`);
 });
