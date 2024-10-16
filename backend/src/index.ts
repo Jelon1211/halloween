@@ -74,11 +74,11 @@ app.post("/login", (req: Request, res: Response) => {
 });
 
 app.post("/points", (req: Request, res: Response) => {
-  const { name, user } = req.body;
+  const { name, user, game_mode } = req.body;
 
-  const insert = `CALL AddPoint(?,?)`;
+  const insert = `CALL AddPoint(?,?,?)`;
 
-  db.query(insert, [name, user], (err, results) => {
+  db.query(insert, [name, user, game_mode], (err, results) => {
     if (err) {
       console.error("Błąd podczas wykonywania zapytania:", err);
       return res
@@ -119,6 +119,40 @@ app.get("/users", async (req: Request, res: Response) => {
     }
 
     res.status(200).json({ message: "All users", results });
+  });
+});
+
+app.get("/game_1", async (req: Request, res: Response) => {
+  const { name } = req.query;
+
+  const target = `CALL GetTarget(?)`;
+
+  db.query(target, [name], (err, results) => {
+    if (err) {
+      console.error("Błąd podczas wykonywania zapytania:", err);
+      return res
+        .status(500)
+        .json({ error: "Wystąpił błąd wewnętrzny serwera" });
+    }
+
+    res.status(200).json({ message: "There's target", results });
+  });
+});
+
+app.get("/game_1/point", async (req: Request, res: Response) => {
+  const { name, user, game_mode } = req.body;
+
+  const target = `CALL AddGame1Point(?,?,?)`;
+
+  db.query(target, [name, user, game_mode], (err, results) => {
+    if (err) {
+      console.error("Błąd podczas wykonywania zapytania:", err);
+      return res
+        .status(500)
+        .json({ error: "Wystąpił błąd wewnętrzny serwera" });
+    }
+
+    res.status(200).json({ message: "There's target", results });
   });
 });
 

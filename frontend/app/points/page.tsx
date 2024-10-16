@@ -34,6 +34,8 @@ export default function Points() {
         );
         const data = await response;
 
+        console.log(data);
+
         const isVoted = data?.data?.results?.[0]?.[0]?.is_voted;
         if (isVoted !== 0) {
           setCanVote(false);
@@ -51,6 +53,7 @@ export default function Points() {
         const filteredUsers = data?.data?.results?.[0]?.filter(
           (item: IUser) => item.name !== name
         );
+
         setUsers(filteredUsers || []);
       } catch (error) {
         console.error("Błąd podczas pobierania listy użytkowników:", error);
@@ -66,6 +69,7 @@ export default function Points() {
       const response = await axios.post("http://localhost:8000/points", {
         name: clickedName,
         user,
+        game_mode: "is_voted",
       });
 
       const getAllUsers = async () => {

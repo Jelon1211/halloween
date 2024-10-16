@@ -23,6 +23,7 @@ export default function Login() {
         <button
           type="button"
           className="text-2xl w-full mb-8 p-4 text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-center"
+          onClick={() => router.push("/game/game1")}
         >
           Gra 1
         </button>
