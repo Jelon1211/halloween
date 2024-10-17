@@ -3,14 +3,24 @@
 import { createContext, useState, ReactNode, useContext } from "react";
 
 interface UserContextType {
-  user: string | null;
-  setUser: (user: string | null) => void;
+  user: IUser;
+  setUser: (user: IUser) => void;
+}
+
+interface IUser {
+  name: string;
+  character: string;
+  points: number;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<string | null>(null);
+  const [user, setUser] = useState<IUser>({
+    name: "unknown",
+    character: "unknown",
+    points: 0,
+  });
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

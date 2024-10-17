@@ -21,28 +21,14 @@ export default function Points() {
 
   useEffect(() => {
     const name = localStorage.getItem("name");
-    if (name) {
-      setUser(name);
-    } else {
+    if (!name) {
       router.push("/");
     }
-
-    const getUserData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8000/points?name=${name}`
-        );
-        const data = await response;
-
-        console.log(data);
-
-        const isVoted = data?.data?.results?.[0]?.[0]?.is_voted;
-        if (isVoted !== 0) {
-          setCanVote(false);
-        }
-      } catch (error) {
-        console.error("Błąd podczas pobierania danych użytkownika:", error);
-      }
+    const getUser = async () => {
+      const responseUser = await axios.get(
+        `http://localhost:8000/player?name=${name}`
+      );
+      setUser(responseUser.data.results[0][0]);
     };
 
     const getAllUsers = async () => {
@@ -60,15 +46,40 @@ export default function Points() {
       }
     };
 
-    getUserData();
-    getAllUsers();
+    Promise.all([getUser(), getAllUsers()])
+      .then(() => console.log("git"))
+      .catch((e) => console.log("error ->", e));
   }, []);
+
+  useEffect(() => {
+    const asyncFunc = async () => {
+      getUserData();
+    };
+    asyncFunc();
+  }, [user]);
+
+  const getUserData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/points?name=${user.name}`
+      );
+      const data = await response;
+
+      const isVoted = data?.data?.results?.[0]?.[0]?.is_voted;
+
+      if (isVoted) {
+        setCanVote(false);
+      }
+    } catch (error) {
+      console.error("Błąd podczas pobierania danych użytkownika:", error);
+    }
+  };
 
   const addPoint = async (clickedName: string) => {
     try {
       const response = await axios.post("http://localhost:8000/points", {
         name: clickedName,
-        user,
+        user: user.name,
         game_mode: "is_voted",
       });
 
@@ -78,7 +89,7 @@ export default function Points() {
           const data = await response;
 
           const filteredUsers = data?.data?.results?.[0]?.filter(
-            (item: IUser) => item.name !== user
+            (item: IUser) => item.name !== user.name
           );
           setUsers(filteredUsers || []);
         } catch (error) {
@@ -98,7 +109,10 @@ export default function Points() {
       className="w-full h-screen flex flex-col justify-start items-center gap-6"
       style={{ marginTop: "25vh" }}
     >
-      <div className="absolute left-5 top-5 text-xl">{user}</div>
+      <div className="absolute left-10 top-10 text-xl">{user.name}</div>
+      <div className="absolute left-70 top-10 text-xl">{user.character}</div>
+      <div className="absolute left-80 top-10 text-xl">{user.points}</div>
+
       <h1 className="text-2xl fixed top-[15%]">Punktacja</h1>
       <div className="w-full overflow-y-auto" style={{ maxHeight: "75vh" }}>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">

@@ -37,6 +37,12 @@ export default function Login() {
         name: sanitizedName,
       });
 
+      console.log(response.data.results[0][0]?.no_user_found);
+
+      if (response.data.results[0][0]?.no_user_found == 0) {
+        setErrorData("Nie ma takiego użytkownika");
+      }
+
       if (response.status === 200) {
         setUser(sanitizedName);
         localStorage.setItem("name", sanitizedName);
@@ -54,6 +60,16 @@ export default function Login() {
 
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center gap-6">
+      {errorData ? (
+        <div
+          className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <span className="font-medium">{errorData}</span>
+        </div>
+      ) : (
+        ""
+      )}
       <h1 className="text-2xl">Wpisz swoje imię i nazwisko</h1>
       <form onSubmit={handleSubmit} className="w-full flex flex-col">
         <div className="flex px-8">
