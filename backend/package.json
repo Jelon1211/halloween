@@ -15,12 +15,16 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.0.0",
-    "mysql2": "^3.11.3"
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.11.3",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "@types/multer": "^1.4.12",
     "@types/socket.io": "^3.0.1",
+    "@types/uuid": "^10.0.0",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
