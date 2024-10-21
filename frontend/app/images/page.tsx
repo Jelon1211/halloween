@@ -6,10 +6,11 @@ import imageCompression from "browser-image-compression";
 import { useRouter } from "next/navigation";
 
 const Images = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [compressedFile, setCompressedFile] = useState<File | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
   const [photos, setPhotos] = useState([]);
+  const [isPointAdded, setIsPointAdded] = useState<boolean>(false);
+  const [isPhotoSending, setIsPhotoSending] = useState<boolean>(false);
   const { user, setUser } = useUser();
   const router = useRouter();
 
@@ -34,12 +35,11 @@ const Images = () => {
     } else {
       router.push("/");
     }
-  }, []);
+  }, [isPhotoSending]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setSelectedFile(file);
       compressImage(file);
       const photoURL = URL.createObjectURL(file);
       setPhoto(photoURL);
@@ -68,9 +68,11 @@ const Images = () => {
     }
 
     const formData = new FormData();
+    formData.append("name", user.name);
     formData.append("photo", compressedFile);
 
     try {
+      setIsPhotoSending(true);
       const response = await axios.post(
         "http://localhost:8000/upload",
         formData,
@@ -83,7 +85,52 @@ const Images = () => {
       console.log("Obraz wysłany:", response.data);
     } catch (error) {
       console.error("Błąd podczas wysyłania obrazu:", error);
+      setIsPhotoSending(false);
+    } finally {
+      setIsPhotoSending(false);
     }
+  };
+
+  const handleAddPoint = async (url: string) => {
+    const filenameRegex = /[^/]+$/;
+    const match = url.match(filenameRegex);
+
+    if (match) {
+      const filename = match[0];
+      const nameMatch = filename.match(/_(.*)\./);
+      if (nameMatch) {
+        const clickedName = nameMatch[1];
+
+        try {
+          setIsPhotoSending(true);
+          const response = await axios.post("http://localhost:8000/points", {
+            name: clickedName,
+            user: user.name,
+            game_mode: "is_photo",
+          });
+        } catch (e) {
+          setIsPhotoSending(false);
+          console.error("Error -> ", e);
+        } finally {
+          setIsPhotoSending(false);
+        }
+      } else {
+        console.error("Nie udało się znaleźć imienia w nazwie pliku");
+      }
+    } else {
+      console.error("Nie udało się znaleźć nazwy pliku w podanym URL");
+    }
+  };
+
+  const handleDownloadPhoto = (url: string, filename: string) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename || "downloaded_photo.jpg";
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
   };
 
   return (
@@ -95,12 +142,59 @@ const Images = () => {
       <div className="absolute left-70 top-10 text-xl">{user.character}</div>
       <div className="absolute left-80 top-10 text-xl">{user.points}</div>
 
-      <h1 className="text-2xl mb-10">Zdjęcia</h1>
+      <div className="mb-10 flex flex-col text-center">
+        <h1 className="text-2xl">Zdjęcia</h1>
+        {isPointAdded ? (
+          ""
+        ) : (
+          <p className="text-sm">
+            Możesz dodać punkt za zdjęcie, które najbardziej Ci się podoba
+          </p>
+        )}
+      </div>
 
       <div>
         {photos.map((item, index) => (
-          <div key={index} className="p-4">
+          <div key={index} className="p-4 relative">
             <img src={item.url} alt={item.filename} />
+            <span
+              className="absolute top-4 left-4 bg-white p-1 rounded"
+              onClick={() => handleDownloadPhoto(item.url, item.filename)}
+            >
+              <a href={item.url} download>
+                <svg
+                  width="20px"
+                  height="20px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8 22.0002H16C18.8284 22.0002 20.2426 22.0002 21.1213 21.1215C22 20.2429 22 18.8286 22 16.0002V15.0002C22 12.1718 22 10.7576 21.1213 9.8789C20.3529 9.11051 19.175 9.01406 17 9.00195M7 9.00195C4.82497 9.01406 3.64706 9.11051 2.87868 9.87889C2 10.7576 2 12.1718 2 15.0002L2 16.0002C2 18.8286 2 20.2429 2.87868 21.1215C3.17848 21.4213 3.54062 21.6188 4 21.749"
+                    stroke="#1C274C"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M12 2L12 15M12 15L9 11.5M12 15L15 11.5"
+                    stroke="#1C274C"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </a>
+            </span>
+            {isPhotoSending || user.photo ? (
+              ""
+            ) : (
+              <span
+                className="absolute top-4 right-4 bg-white px-1 rounded text-green-600 text-2xl"
+                onClick={() => handleAddPoint(item.url)}
+              >
+                +
+              </span>
+            )}
           </div>
         ))}
       </div>
@@ -121,12 +215,16 @@ const Images = () => {
           </div>
         )}
 
-        <button
-          onClick={handleUpload}
-          className="text-2xl mb-8 p-4 text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-center dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900"
-        >
-          Wyślij zdjęcie
-        </button>
+        {isPhotoSending ? (
+          ""
+        ) : (
+          <button
+            onClick={handleUpload}
+            className="text-2xl mb-8 p-4 text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-center dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900"
+          >
+            Wyślij zdjęcie
+          </button>
+        )}
       </div>
     </div>
   );

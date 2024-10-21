@@ -7,8 +7,10 @@ CREATE TABLE users (
     is_game_1 TINYINT(1) NOT NULL DEFAULT 0,
     is_game_2 TINYINT(1) NOT NULL DEFAULT 0,
     is_game_3 TINYINT(1) NOT NULL DEFAULT 0,
-    is_game_4 TINYINT(1) NOT NULL DEFAULT 0
+    is_game_4 TINYINT(1) NOT NULL DEFAULT 0,
+    is_photo TINYINT(1) NOT NULL DEFAULT 0
 );
+
 
 CREATE TABLE game_1 (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -76,7 +78,8 @@ BEGIN
            `type_character` AS `character`,
            is_game_2 as game2,
            is_game_3 as game3,
-           is_game_4 as game4
+           is_game_4 as game4,
+           is_photo as photo
     FROM users
     WHERE name = userName;
   

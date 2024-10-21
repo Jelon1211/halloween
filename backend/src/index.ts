@@ -9,6 +9,7 @@ const app: Express = express();
 
 app.use(cors());
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const PORT = 8000;
@@ -56,7 +57,8 @@ const storage = multer.diskStorage({
       }
     }
 
-    const uniqueSuffix = uuidv4() + fileExt;
+    const name = req.body.name ? req.body.name.replace(/\s+/g, "_") : "default";
+    const uniqueSuffix = `${uuidv4()}_${name}${fileExt}`;
     console.log("Generowana nazwa pliku:", uniqueSuffix);
     cb(null, uniqueSuffix);
   },
@@ -139,18 +141,30 @@ app.post("/points", (req: Request, res: Response) => {
   });
 });
 
-app.post("/upload", upload.single("photo"), (req: any, res: any) => {
-  if (!req.file) {
-    return res.status(400).json({ message: "Nie przesłano pliku" });
-  }
+app.post("/upload", (req: any, res: any) => {
+  // Uruchamiamy multer
+  upload.single("photo")(req, res, (err: any) => {
+    if (err) {
+      return res.status(400).json({ message: err.message });
+    }
 
-  res.status(200).json({
-    message: "Obraz został pomyślnie przesłany",
-    file: req.file.filename,
+    const { name } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({ message: "Nie przesłano pliku" });
+    }
+
+    res.status(200).json({
+      message: "Obraz został pomyślnie przesłany",
+      file: req.file.filename,
+    });
   });
 });
 
-app.get("/upload", (req: Request, res: Response) => {
+app.get("/upload", (req, res) => {
+  if (!fs.existsSync(uploadDir)) {
+    return res.status(404).json({ message: "brak zdjęć" });
+  }
   fs.readdir(uploadDir, (err, files) => {
     if (err) {
       return res
