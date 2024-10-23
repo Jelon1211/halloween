@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/app/context/UserContext";
 import axios from "axios";
 
-export default function Login() {
+export default function Game3() {
   const { user, setUser } = useUser();
 
   const [isPointAdded, setIsPointAdded] = useState<boolean>(false);

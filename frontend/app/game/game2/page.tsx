@@ -10,7 +10,7 @@ type BingoItem = {
   is_clicked: boolean;
 };
 
-export default function Login() {
+export default function Game2() {
   const { user, setUser } = useUser();
 
   const [isPointAdded, setIsPointAdded] = useState<boolean>(false);

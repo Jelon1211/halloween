@@ -63,6 +63,7 @@ export default function Login() {
         <button
           type="button"
           className="text-2xl w-full mb-8 p-4 text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-center"
+          onClick={() => router.push("/game/game4")}
         >
           Gra 4
         </button>

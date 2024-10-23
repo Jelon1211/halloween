@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/app/context/UserContext";
 import axios from "axios";
 
-export default function Login() {
+export default function Game1() {
   const { user, setUser } = useUser();
   const [target, setTarget] = useState<string | null>(null);
   const [quest, setQuest] = useState<string | null>(null);
