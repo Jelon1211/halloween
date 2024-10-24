@@ -58,12 +58,14 @@ export default function Game2() {
     if (!bingo || !bingo.length) {
       shuffleBingo();
     } else {
-      const storedBingo = JSON.parse(localStorage.getItem("bingo"));
+      const storedBingo = localStorage.getItem("bingo")
+        ? JSON.parse(localStorage.getItem("bingo") as string)
+        : [];
       setBingo(storedBingo);
     }
 
     getUser();
-  }, []);
+  }, [router, setUser]);
 
   const handleAddPoint = async () => {
     await axios.post("http://localhost:8000/points", {

@@ -53,7 +53,7 @@ export default function Game4() {
 
     getRandomTopic();
     getUser();
-  }, []);
+  }, [router, setUser]);
 
   const handleAddPoint = async () => {
     await axios.post("http://localhost:8000/points", {
@@ -77,7 +77,7 @@ export default function Game4() {
               narzekanie, tym lepiej!
             </p>
             <p className="text-center mt-6">
-              Twój temat:{" "}
+              Twój temat:
               <span className="italic text-xl text-emerald-400">
                 {gameTopic.game1}
               </span>
@@ -95,7 +95,7 @@ export default function Game4() {
               się, zmuszając go do jeszcze bardziej kreatywnych wyjaśnień!
             </p>
             <p className="text-center mt-6">
-              Twój temat:{" "}
+              Twój temat:
               <span className="italic text-xl text-emerald-400">
                 {gameTopic.game2}
               </span>
@@ -108,13 +108,13 @@ export default function Game4() {
             <h2 className="text-center text-2xl p-4">Największy ekspert</h2>
             <p className="text-center">
               Gracze udają ekspertów od najbardziej dziwacznych i losowych
-              dziedzin. Reszta uczestników zadaje pytania, a{" "}
+              dziedzin. Reszta uczestników zadaje pytania, a
               <strong className="italic">ekspert</strong> musi z przekonaniem
               odpowiadać, wymyślając odpowiedzi na bieżąco. Czy wiesz, jak
               trenować smoki albo jak działa teleportacja psów?
             </p>
             <p className="text-center mt-6">
-              Twój temat:{" "}
+              Twój temat:
               <span className="italic text-xl text-emerald-400">
                 {gameTopic.game3}
               </span>

@@ -15,6 +15,7 @@ export default function Game1() {
     const name = localStorage.getItem("name");
     if (!name) {
       router.push("/");
+      return;
     }
     const getUser = async () => {
       const responseUser = await axios.get(
@@ -37,7 +38,7 @@ export default function Game1() {
     };
     getTarget();
     getUser();
-  }, []);
+  }, [router, setUser]);
 
   const handleAddPoint = async () => {
     await axios.post("http://localhost:8000/points", {

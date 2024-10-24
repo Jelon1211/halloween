@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
 import imageCompression from "browser-image-compression";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+
+interface IImage {
+  url: string;
+  filename: string;
+}
 
 const Images = () => {
   const [compressedFile, setCompressedFile] = useState<File | null>(null);
@@ -35,7 +41,7 @@ const Images = () => {
     } else {
       router.push("/");
     }
-  }, [isPhotoSending]);
+  }, [isPhotoSending, router, setUser]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -103,7 +109,7 @@ const Images = () => {
 
         try {
           setIsPhotoSending(true);
-          const response = await axios.post("http://localhost:8000/points", {
+          await axios.post("http://localhost:8000/points", {
             name: clickedName,
             user: user.name,
             game_mode: "is_photo",
@@ -113,6 +119,7 @@ const Images = () => {
           console.error("Error -> ", e);
         } finally {
           setIsPhotoSending(false);
+          setIsPointAdded(true);
         }
       } else {
         console.error("Nie udało się znaleźć imienia w nazwie pliku");
@@ -154,9 +161,9 @@ const Images = () => {
       </div>
 
       <div>
-        {photos.map((item, index) => (
+        {photos.map((item: IImage, index) => (
           <div key={index} className="p-4 relative">
-            <img src={item.url} alt={item.filename} />
+            <Image src={item.url} alt={item.filename} />
             <span
               className="absolute top-4 left-4 bg-white p-1 rounded"
               onClick={() => handleDownloadPhoto(item.url, item.filename)}
@@ -211,7 +218,7 @@ const Images = () => {
         {photo && (
           <div>
             <h2>Podgląd zdjęcia</h2>
-            <img src={photo} alt="Zdjęcie" style={{ width: "100%" }} />
+            <Image src={photo} alt="Zdjęcie" style={{ width: "100%" }} />
           </div>
         )}
 

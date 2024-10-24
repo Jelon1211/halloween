@@ -27,7 +27,7 @@ export default function Game3() {
     };
 
     getUser();
-  }, []);
+  }, [router, setUser]);
 
   const handleAddPoint = async (isPoint: boolean) => {
     await axios.post("http://localhost:8000/points", {
@@ -75,12 +75,12 @@ export default function Game3() {
               <li>
                 Jeśli zgadną, otrzymują punkt: łowca zdobywa punkt, jeśli
                 poprawnie zidentyfikuje wampira, a wampir zdobywa punkt, jeśli
-                odnajdzie innego wampira (Uczestnij wciska przycisk "Cel
-                ukończony!").
+                odnajdzie innego wampira (Uczestnij wciska przycisk &quot;Cel
+                ukończony!&ldquo;).
               </li>
               <li>
                 Jeśli uczestnik udzieli błędnej odpowiedzi, nie zdobywa punktu.
-                (Wciska przycisk, "Brak punktu")
+                (Wciska przycisk, &quot;Brak punktu&ldquo;)
               </li>
               <li>
                 Gra kończy się po ustalonym czasie, a wygrywa gracz z największą

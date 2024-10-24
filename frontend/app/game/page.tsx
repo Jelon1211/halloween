@@ -24,7 +24,7 @@ export default function Login() {
     } else {
       router.push("/");
     }
-  }, []);
+  }, [router, setUser]);
 
   const handleInit = async () => {
     await axios.get("http://localhost:8000/init");

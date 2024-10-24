@@ -15,19 +15,24 @@ app.use(express.json());
 
 const PORT = 8000;
 
-const db = mysql.createConnection({
-  host: "halloween_db",
-  user: "root",
-  password: "password",
-  database: "halloween_db",
+const db = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
-db.connect((err) => {
-  if (err) {
-    console.error("Nie można połączyć z bazą danych:", err);
-    return;
+db.on("error", (err) => {
+  console.error("Błąd połączenia z MySQL:", err);
+  if (err.code === "PROTOCOL_CONNECTION_LOST") {
+    console.log(
+      "Połączenie z bazą danych zostało utracone, ponawianie połączenia..."
+    );
+    // Implementacja ponownego połączenia
   }
-  console.log("Połączono z bazą danych MySQL");
 });
 
 const uploadDir = "uploads/";
@@ -192,7 +197,6 @@ app.get("/init", async (req: Request, res: Response) => {
 
     let availableTargets = [...userIds];
     let targetCount = availableTargets.length;
-    console.log(targetCount);
 
     let availableQuests = [...questList];
     let availableQuestIds = [...questIds];

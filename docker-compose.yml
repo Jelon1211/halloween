@@ -10,6 +10,8 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - app-network
 
   backend:
     build:
@@ -20,12 +22,15 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=mysql://root:password@db:3306/halloween_db
+      - DB_HOST=halloween_db
+      - DB_USER=root
+      - DB_PASSWORD=password
+      - DB_NAME=halloween_db
+      - NODE_ENV=production
     depends_on:
       - db
-    volumes:
-      - ./backend:/app
-    command: npm run dev
+    networks:
+      - app-network
 
   frontend:
     build:
@@ -36,14 +41,14 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=mysql://root:password@db:3306/halloween_db
-      - NODE_ENV=development
+      - NODE_ENV=production
     depends_on:
-      - db
-    volumes:
-      - ./frontend:/app
-    command: npm run dev:watch
+      - backend
+    networks:
+      - app-network
 
 volumes:
   db_data:
-  redis_data:
+
+networks:
+  app-network:

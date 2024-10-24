@@ -49,13 +49,14 @@ export default function Points() {
     Promise.all([getUser(), getAllUsers()])
       .then(() => console.log("git"))
       .catch((e) => console.log("error ->", e));
-  }, []);
+  }, [router, setUser]);
 
   useEffect(() => {
     const asyncFunc = async () => {
       getUserData();
     };
     asyncFunc();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const getUserData = async () => {
@@ -77,7 +78,7 @@ export default function Points() {
 
   const addPoint = async (clickedName: string) => {
     try {
-      const response = await axios.post("http://localhost:8000/points", {
+      await axios.post("http://localhost:8000/points", {
         name: clickedName,
         user: user.name,
         game_mode: "is_voted",

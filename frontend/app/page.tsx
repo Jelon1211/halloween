@@ -11,16 +11,17 @@ export default function Home() {
   });
   const [errorData, setErrorData] = useState<string>("");
   const router = useRouter();
-  const { user, setUser } = useUser();
+  const { setUser } = useUser();
 
   useEffect(() => {
     const name = localStorage.getItem("name");
     if (name) {
       router.push("/game");
     }
-  }, []);
+  }, [router]);
 
-  const handleInputChange = (e) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -28,7 +29,8 @@ export default function Home() {
     });
   };
 
-  const handleSubmit = async (e) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const sanitizedFirstName = formData.firstName
       .toLowerCase()
@@ -45,11 +47,21 @@ export default function Home() {
       });
 
       if (response.status === 201) {
-        setUser(sanitizedName);
+        const userData = {
+          name: sanitizedName,
+          character: response.data.results[0][0].character,
+          points: response.data.results[0][0].points,
+          game2: response.data.results[0][0].game2,
+          game3: response.data.results[0][0].game3,
+          game4: response.data.results[0][0].game4,
+          photo: response.data.results[0][0].photo,
+        };
+        setUser(userData);
         localStorage.setItem("name", sanitizedName);
         router.push("/game");
       }
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       if (error.response && error.response.status === 400) {
         setErrorData("Użytkownik o takiej nazwie już istnieje");
       } else {
