@@ -108,82 +108,17 @@ BEGIN
   );
 END;
 
-DELIMITER $$
-CREATE PROCEDURE fill_game_1()
+DROP PROCEDURE IF EXISTS insert_game_1_data;
+CREATE DEFINER=`root`@`%` PROCEDURE `insert_game_1_data`(
+    IN u_id INT,
+    IN t_id INT,
+    IN current_quest TEXT,
+    IN current_quest_id INT
+)
 BEGIN
-    DECLARE total_users INT;
-    DECLARE total_quests INT;
-    DECLARE i INT;
-    DECLARE u_id INT;
-    DECLARE t_id INT;
-    DECLARE quest_index INT;
-
-    DECLARE quest_list TEXT;
-    DECLARE quest_id_list TEXT;
-
-    DECLARE current_quest TEXT;
-    DECLARE current_quest_id INT;
-
-    -- Lista użytkowników dostępnych do bycia targetem
-    DECLARE available_targets TEXT;
-    DECLARE target_count INT;
-
-    -- Listy zadań i ich ID
-    SET quest_list = 'Zagraj z nim/nią w kamień papier nożyce,Spraw aby się zaśmiał/a,Spraw żeby zaklaskał/a,Zrób sobie z nią selfie,Namów żeby powiedział/a swoje imię od tyłu,Spraw żeby opowiedział/a coś śmiesznego,Spraw żeby opowiedział/a o swoim przebraniu,Spraw żeby zatańczył/a,Przekonaj aby opowiedział/a żart,Spraw żeby zrobił/a zabawną minę,Spraw żeby udawał/a zombie,Przekonaj żeby opowiedział/a historię z dzieciństwa,Spraw żeby opowiedział/a o najdziwniejszym prezencie jaki kiedykolwiek dostał/a,Namów żeby złożył/a komuś komplement,Spraw żeby powiedział/a coś w obcym języku,Namów żeby na chwilę stał/a na jednej nodze,Spraw żeby zapytał/a Cię o radę w dowolnej kwestii,Spraw żeby przyniósł/a Ci coś,Spraw żeby wziął/a 3 głębokie oddechy na pokaz,Namów żeby opowiedział/a co najbardziej lubi w Halloween,Spraw żeby powiedział/a co by zrobił/a gdyby spotkał/a wampira,Przekonaj żeby narysował/a dynię na kartce papieru,Namów żeby opowiadziałą hisotrię o przedmiocie który właśnie ma w kieszeni,Spraw żeby zadała komuś innemu jakieś nietypowe pytanie,Namów żeby opisała swoje wymarzone wakacje,Spraw żeby wymyśliła nowego drinka';
-    SET quest_id_list = '101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126';
-
-    -- Pobranie liczby użytkowników
-    SELECT COUNT(*) INTO total_users FROM users;
-
-    SET total_quests = 20;
-
-    -- Inicjalizacja dostępnych targetów (wszyscy użytkownicy)
-    SELECT GROUP_CONCAT(id) INTO available_targets FROM users;
-    SET target_count = total_users;
-
-    SET i = 0;
-
-    -- Przypisywanie zadań każdemu użytkownikowi
-    WHILE i < total_users DO
-        -- Pobranie ID użytkownika
-        SELECT id INTO u_id FROM users LIMIT i, 1;
-
-        -- Wybór zadania z listy (modulo, aby zadania cyklicznie przydzielać)
-        SET quest_index = (i % total_quests) + 1;
-        SELECT SUBSTRING_INDEX(SUBSTRING_INDEX(quest_list, ',', quest_index), ',', -1) INTO current_quest;
-        SELECT SUBSTRING_INDEX(SUBSTRING_INDEX(quest_id_list, ',', quest_index), ',', -1) INTO current_quest_id;
-
-        -- Losowe wybranie targetu z dostępnych
-        SELECT SUBSTRING_INDEX(SUBSTRING_INDEX(available_targets, ',', FLOOR(RAND() * target_count) + 1), ',', -1) INTO t_id;
-
-        -- Sprawdzenie, czy target nie jest tym samym użytkownikiem
-        IF t_id = u_id THEN
-            -- Jeśli tak, wybierz losowo innego użytkownika jako target
-            SELECT id INTO t_id FROM users WHERE id != u_id ORDER BY RAND() LIMIT 1;
-        END IF;
-
-        -- Wstawienie danych do tabeli game_1
-        INSERT IGNORE INTO game_1 (user_id, target, quest, quest_id) 
-        VALUES (u_id, t_id, current_quest, current_quest_id);
-
-        -- Usunięcie targetu z listy dostępnych targetów
-        SET available_targets = REPLACE(available_targets, CONCAT(',', t_id), '');
-        SET available_targets = REPLACE(available_targets, CONCAT(t_id, ','), '');
-        SET available_targets = REPLACE(available_targets, t_id, '');
-        SET target_count = target_count - 1;
-
-        -- Zwiększenie licznika
-        SET i = i + 1;
-
-        -- Jeśli target_count jest 0 (wszyscy zostali użyci jako targety), resetuj listę targetów
-        IF target_count = 0 THEN
-            SELECT GROUP_CONCAT(id) INTO available_targets FROM users;
-            SET target_count = total_users;
-        END IF;
-    END WHILE;
-END $$
-DELIMITER ;
-
+  INSERT IGNORE INTO game_1 (user_id, target, quest, quest_id)
+  VALUES (u_id, t_id, current_quest, current_quest_id);
+END;
 
 DELIMITER ;
 DROP PROCEDURE IF EXISTS GetTarget;

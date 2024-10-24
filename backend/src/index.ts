@@ -5,6 +5,7 @@ import multer, { FileFilterCallback } from "multer";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
+import { questIds, questList } from "./data/quests";
 const app: Express = express();
 
 app.use(cors());
@@ -184,18 +185,62 @@ app.get("/upload", (req, res) => {
 });
 
 app.get("/init", async (req: Request, res: Response) => {
-  const initGames = `CALL fill_game_1()`;
+  try {
+    const [users]: any = await db.promise().query("CALL GetAllUsers()");
 
-  db.query(initGames, [], (err, results) => {
-    if (err) {
-      console.error("Błąd podczas wykonywania zapytania:", err);
-      return res
-        .status(500)
-        .json({ error: "Wystąpił błąd wewnętrzny serwera" });
+    const userIds = users[0].map((user: { id: any }) => user.id);
+
+    let availableTargets = [...userIds];
+    let targetCount = availableTargets.length;
+    console.log(targetCount);
+
+    let availableQuests = [...questList];
+    let availableQuestIds = [...questIds];
+
+    for (let i = 0; i < userIds.length; i++) {
+      const u_id = userIds[i];
+
+      const questRandomIndex = Math.floor(
+        Math.random() * availableQuests.length
+      );
+      const currentQuest = availableQuests[questRandomIndex];
+      const currentQuestId = availableQuestIds[questRandomIndex];
+
+      availableQuests.splice(questRandomIndex, 1);
+      availableQuestIds.splice(questRandomIndex, 1);
+
+      if (availableQuests.length === 0) {
+        availableQuests = [...questList];
+        availableQuestIds = [...questIds];
+      }
+
+      let t_id = availableTargets[Math.floor(Math.random() * targetCount)];
+
+      if (t_id === u_id) {
+        const filteredTargets = availableTargets.filter((id) => id !== u_id);
+        t_id =
+          filteredTargets[Math.floor(Math.random() * filteredTargets.length)];
+      }
+
+      const insert = `CALL insert_game_1_data(?, ?, ?, ?)`;
+      await db
+        .promise()
+        .query(insert, [u_id, t_id, currentQuest, currentQuestId]);
+
+      availableTargets = availableTargets.filter((id) => id !== t_id);
+      targetCount--;
+
+      if (targetCount === 0) {
+        availableTargets = [...userIds];
+        targetCount = availableTargets.length;
+      }
     }
 
-    res.status(200).json({ message: "Init wywołany", results });
-  });
+    res.status(200).json({ message: "Zadania zostały przypisane losowo." });
+  } catch (error) {
+    console.error("Błąd podczas wykonywania zapytania:", error);
+    res.status(500).json({ error: "Wystąpił błąd wewnętrzny serwera" });
+  }
 });
 
 app.get("/reset", async (req: Request, res: Response) => {

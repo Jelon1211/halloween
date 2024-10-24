@@ -1,0 +1,33 @@
+export const questList = [
+  "Zagraj z nim/nią w kamień papier nożyce",
+  "Spraw aby się zaśmiał/a",
+  "Spraw żeby zaklaskał/a",
+  "Zrób sobie z nią selfie",
+  "Namów żeby powiedział/a swoje imię od tyłu",
+  "Spraw żeby opowiedział/a coś śmiesznego",
+  "Spraw żeby opowiedział/a o swoim przebraniu",
+  "Spraw żeby zatańczył/a",
+  "Przekonaj aby opowiedział/a żart",
+  "Spraw żeby zrobił/a zabawną minę",
+  "Spraw żeby udawał/a zombie",
+  "Przekonaj żeby opowiedział/a historię z dzieciństwa",
+  "Spraw żeby opowiedział/a o najdziwniejszym prezencie jaki kiedykolwiek dostał/a",
+  "Namów żeby złożył/a komuś komplement",
+  "Spraw żeby powiedział/a coś w obcym języku",
+  "Namów żeby na chwilę stał/a na jednej nodze",
+  "Spraw żeby zapytał/a Cię o radę w dowolnej kwestii",
+  "Spraw żeby przyniósł/a Ci coś",
+  "Spraw żeby wziął/a 3 głębokie oddechy na pokaz",
+  "Namów żeby opowiedział/a co najbardziej lubi w Halloween",
+  "Spraw żeby powiedział/a co by zrobił/a gdyby spotkał/a wampira",
+  "Przekonaj żeby narysował/a dynię na kartce papieru",
+  "Namów żeby opowiadiałą hisotrię o przedmiocie który właśnie ma w kieszeni",
+  "Spraw żeby zadała komuś innemu jakieś nietypowe pytanie",
+  "Namów żeby opisała swoje wymarzone wakacje",
+  "Spraw żeby wymyśliła nowego drinka",
+];
+
+export const questIds = [
+  101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115,
+  116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126,
+];
