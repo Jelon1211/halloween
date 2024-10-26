@@ -275,6 +275,8 @@ app.get("/player", async (req: Request, res: Response) => {
         .json({ error: "Wystąpił błąd wewnętrzny serwera" });
     }
 
+    console.log(results);
+
     res.status(200).json({ message: "Twój player", results });
   });
 });

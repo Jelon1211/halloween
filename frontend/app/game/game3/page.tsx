@@ -19,7 +19,7 @@ export default function Game3() {
 
     const getUser = async () => {
       const responseUser = await axios.get(
-        `http://localhost:8000/player?name=${name}`
+        `${process.env.NEXT_PUBLIC_BACKEND_HOST}/player?name=${name}`
       );
 
       setIsPointAdded(responseUser.data.results[0][0].game3);
@@ -30,7 +30,7 @@ export default function Game3() {
   }, [router, setUser]);
 
   const handleAddPoint = async (isPoint: boolean) => {
-    await axios.post("http://localhost:8000/points", {
+    await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/points`, {
       name: isPoint ? user.name : "BRAK",
       user: user.name,
       game_mode: "is_game_3",

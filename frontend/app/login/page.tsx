@@ -2,7 +2,6 @@
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "../context/UserContext";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -11,7 +10,6 @@ export default function Login() {
   });
   const [errorData, setErrorData] = useState<string>("");
   const router = useRouter();
-  const { setUser } = useUser();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleInputChange = (e: any) => {
@@ -35,27 +33,21 @@ export default function Login() {
     const sanitizedName = sanitizedFirstName + sanitizedLastName;
 
     try {
-      const response = await axios.post("http://localhost:8000/login", {
-        name: sanitizedName,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_HOST}/login`,
+        {
+          name: sanitizedName,
+        }
+      );
 
       console.log(response.data.results[0][0]?.no_user_found);
 
       if (response.data.results[0][0]?.no_user_found == 0) {
         setErrorData("Nie ma takiego użytkownika");
+        return;
       }
 
-      if (response.status === 200) {
-        const userData = {
-          name: sanitizedName,
-          character: response.data.results[0][0].character,
-          points: response.data.results[0][0].points,
-          game2: response.data.results[0][0].game2,
-          game3: response.data.results[0][0].game3,
-          game4: response.data.results[0][0].game4,
-          photo: response.data.results[0][0].photo,
-        };
-        setUser(userData);
+      if (response.data.results[0][0].character) {
         localStorage.setItem("name", sanitizedName);
         router.push("/game");
       }

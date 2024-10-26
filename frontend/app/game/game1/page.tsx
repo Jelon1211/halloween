@@ -19,14 +19,14 @@ export default function Game1() {
     }
     const getUser = async () => {
       const responseUser = await axios.get(
-        `http://localhost:8000/player?name=${name}`
+        `${process.env.NEXT_PUBLIC_BACKEND_HOST}/player?name=${name}`
       );
       setUser(responseUser.data.results[0][0]);
     };
 
     const getTarget = async () => {
       const target = await axios.get(
-        `http://localhost:8000/game_1?name=${name}`
+        `${process.env.NEXT_PUBLIC_BACKEND_HOST}/game_1?name=${name}`
       );
       console.log(target);
 
@@ -41,7 +41,7 @@ export default function Game1() {
   }, [router, setUser]);
 
   const handleAddPoint = async () => {
-    await axios.post("http://localhost:8000/points", {
+    await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/points`, {
       name: user.name,
       user: user.name,
       game_mode: "is_game_1",

@@ -1,6 +1,6 @@
 CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255),
+    name VARCHAR(255) UNIQUE,
     points INT(10) NOT NULL DEFAULT 0,
     type_character VARCHAR(255),
     is_voted TINYINT(1) NOT NULL DEFAULT 0,
@@ -11,7 +11,6 @@ CREATE TABLE users (
     is_photo TINYINT(1) NOT NULL DEFAULT 0
 );
 
-
 CREATE TABLE game_1 (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT(10),
@@ -20,7 +19,6 @@ CREATE TABLE game_1 (
     quest_id INT(10),
     UNIQUE(user_id)
 );
-
 
 DROP PROCEDURE IF EXISTS AddPoint;
 CREATE DEFINER=`root`@`%` PROCEDURE `AddPoint`(

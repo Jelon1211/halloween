@@ -25,13 +25,15 @@ const Images = () => {
     if (name) {
       const getUser = async () => {
         const responseUser = await axios.get(
-          `http://localhost:8000/player?name=${name}`
+          `${process.env.NEXT_PUBLIC_BACKEND_HOST}/player?name=${name}`
         );
         setUser(responseUser.data.results[0][0]);
       };
 
       const getPhotos = async () => {
-        const responsePhotos = await axios.get("http://localhost:8000/upload");
+        const responsePhotos = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_HOST}/upload`
+        );
         setPhotos(responsePhotos.data.files);
       };
 
@@ -80,7 +82,7 @@ const Images = () => {
     try {
       setIsPhotoSending(true);
       const response = await axios.post(
-        "http://localhost:8000/upload",
+        `${process.env.NEXT_PUBLIC_BACKEND_HOST}/upload`,
         formData,
         {
           headers: {
@@ -109,7 +111,7 @@ const Images = () => {
 
         try {
           setIsPhotoSending(true);
-          await axios.post("http://localhost:8000/points", {
+          await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/points`, {
             name: clickedName,
             user: user.name,
             game_mode: "is_photo",

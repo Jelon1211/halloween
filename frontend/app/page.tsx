@@ -2,7 +2,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "./context/UserContext";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -11,14 +10,15 @@ export default function Home() {
   });
   const [errorData, setErrorData] = useState<string>("");
   const router = useRouter();
-  const { setUser } = useUser();
 
   useEffect(() => {
+    localStorage.clear();
     const name = localStorage.getItem("name");
     if (name) {
       router.push("/game");
     }
-  }, [router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleInputChange = (e: any) => {
@@ -42,21 +42,31 @@ export default function Home() {
     const sanitizedName = sanitizedFirstName + sanitizedLastName;
 
     try {
-      const response = await axios.post("http://localhost:8000/route", {
-        name: sanitizedName,
-      });
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_HOST}/player?name=${sanitizedName}`
+      );
+
+      console.log(response);
+
+      if (response.data.results[0][0].character) {
+        setErrorData("Użytkownik już istnieje, zaloguj się!");
+        return;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Error:", error);
+    }
+
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_HOST}/route`,
+        {
+          name: sanitizedName,
+        }
+      );
 
       if (response.status === 201) {
-        const userData = {
-          name: sanitizedName,
-          character: response.data.results[0][0].character,
-          points: response.data.results[0][0].points,
-          game2: response.data.results[0][0].game2,
-          game3: response.data.results[0][0].game3,
-          game4: response.data.results[0][0].game4,
-          photo: response.data.results[0][0].photo,
-        };
-        setUser(userData);
         localStorage.setItem("name", sanitizedName);
         router.push("/game");
       }
@@ -123,7 +133,7 @@ export default function Home() {
           type="submit"
           className="mx-6 my-6 text-xl focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
         >
-          Zatwierdź
+          Zarejestruj
         </button>
         <div
           className="mx-6 my-6 text-xl text-center text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm py-2.5"

@@ -31,7 +31,7 @@ export default function Game4() {
 
     const getUser = async () => {
       const responseUser = await axios.get(
-        `http://localhost:8000/player?name=${name}`
+        `${process.env.NEXT_PUBLIC_BACKEND_HOST}/player?name=${name}`
       );
 
       setIsPointAdded(responseUser.data.results[0][0].game4);
@@ -56,7 +56,7 @@ export default function Game4() {
   }, [router, setUser]);
 
   const handleAddPoint = async () => {
-    await axios.post("http://localhost:8000/points", {
+    await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/points`, {
       name: user.name,
       user: user.name,
       game_mode: "is_game_4",

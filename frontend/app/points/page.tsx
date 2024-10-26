@@ -26,14 +26,16 @@ export default function Points() {
     }
     const getUser = async () => {
       const responseUser = await axios.get(
-        `http://localhost:8000/player?name=${name}`
+        `${process.env.NEXT_PUBLIC_BACKEND_HOST}/player?name=${name}`
       );
       setUser(responseUser.data.results[0][0]);
     };
 
     const getAllUsers = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/users`);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_HOST}/users`
+        );
         const data = await response;
 
         const filteredUsers = data?.data?.results?.[0]?.filter(
@@ -62,7 +64,7 @@ export default function Points() {
   const getUserData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/points?name=${user.name}`
+        `${process.env.NEXT_PUBLIC_BACKEND_HOST}/points?name=${user.name}`
       );
       const data = await response;
 
@@ -78,7 +80,7 @@ export default function Points() {
 
   const addPoint = async (clickedName: string) => {
     try {
-      await axios.post("http://localhost:8000/points", {
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/points`, {
         name: clickedName,
         user: user.name,
         game_mode: "is_voted",
@@ -86,7 +88,9 @@ export default function Points() {
 
       const getAllUsers = async () => {
         try {
-          const response = await axios.get(`http://localhost:8000/users`);
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_BACKEND_HOST}/users`
+          );
           const data = await response;
 
           const filteredUsers = data?.data?.results?.[0]?.filter(

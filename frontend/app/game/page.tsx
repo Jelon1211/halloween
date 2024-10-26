@@ -13,7 +13,7 @@ export default function Login() {
     if (name) {
       const getUser = async () => {
         const responseUser = await axios.get(
-          `http://localhost:8000/player?name=${name}`
+          `${process.env.NEXT_PUBLIC_BACKEND_HOST}/player?name=${name}`
         );
         setUser(responseUser.data.results[0][0]);
       };
@@ -27,10 +27,10 @@ export default function Login() {
   }, [router, setUser]);
 
   const handleInit = async () => {
-    await axios.get("http://localhost:8000/init");
+    await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/init`);
   };
   const handleReset = async () => {
-    await axios.get("http://localhost:8000/reset");
+    await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/reset`);
   };
 
   return (
