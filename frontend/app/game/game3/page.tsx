@@ -74,54 +74,91 @@ export default function Game3() {
 
       <div className="shadow-lg rounded-lg p-6 max-w-md">
         <div className="pb-6">
-          <h1 className="text-3xl font-bold mb-6 text-center text-yellow-400">
-            Łowcy i Wampiry
+          <h1 className="text-6xl font-bold mb-6">
+            {user.character == "vampire"
+              ? "Wampiry vs łowcy"
+              : "Łowcy vs wampiry"}
           </h1>
-          <div className="text-left space-y-4">
-            <p className="leading-relaxed text-center">
-              W tej pełnej emocji i tajemniczej grze Halloweenowej, każdy z
-              uczestników wciela się w jedną z dwóch ról: łowcę wampirów lub
-              wampira. Zadaniem łowców jest wykrycie i zdemaskowanie wampirów,
-              natomiast wampiry muszą unikać złapania, przekonując innych, że są
-              łowcami. Gra toczy się przez całą imprezę, a uczestnicy muszą
-              uważnie obserwować zachowania innych, formułować swoje podejrzenia
-              i działać w tajemnicy, by zdobyć punkt.
+          <div className="text-left">
+            <p className="leading-relaxed">Klasa</p>
+            <h4 className="text-2xl text-orange font-semibold mb-8">
+              {user.character == "vampire" ? "Wampir" : "Łowca"}
+            </h4>
+            <p className="leading-relaxed">Cel</p>
+            <h4 className="text-2xl text-orange font-semibold mb-8">
+              {user.character == "vampire"
+                ? "Nie daj się złapać łowcom i znajdź innego Wampira."
+                : "Znajdź i zdemaskuj wampira."}
+            </h4>
+
+            <p className="mb-8">
+              {user.character == "vampire"
+                ? "Zostałeś przydzielony do jednej z grup - jesteś łowcą lub wampirem (jedyna prawilna opcja). Gra toczyć się będzie przez całą imprezę, a jako uczestnik musisz obserwować zachowania innych, formułować swoje podejrzenia i działać w tajemnicy, by zdobyć punkt"
+                : "Zostałeś przydzielony do jednej z grup - jesteś łowcą (tym lepszym) lub wampirem. Gra toczyć się będzie przez całą imprezę, a jako uczestnik musisz obserwować zachowania innych, formułować swoje podejrzenia i działać w tajemnicy, by zdobyć punkt."}
             </p>
 
-            <h2 className="text-xl font-semibold text-yellow-300">Zasady:</h2>
-            <ul className="list-disc list-inside">
-              <li>
-                Na początku gry każdy został przydzielony do łowców lub
-                wampirów. Te informacje są tajne i nikt nie może zdradzić swojej
-                tożsamości.
-              </li>
-              <li>
-                W ciągu imprezy, gracze mogą podejść do innego uczestnika i
-                zadać mu tylko jedno pytanie: „Czy jesteś wampirem/łowcą?”.
-              </li>
-              <li>
-                Jeśli zgadną, otrzymują punkt: łowca zdobywa punkt, jeśli
-                poprawnie zidentyfikuje wampira, a wampir zdobywa punkt, jeśli
-                odnajdzie innego wampira (Uczestnij wciska przycisk &quot;Cel
-                ukończony!&ldquo;).
-              </li>
-              <li>
-                Jeśli uczestnik udzieli błędnej odpowiedzi, nie zdobywa punktu.
-                (Wciska przycisk, &quot;Brak punktu&ldquo;)
-              </li>
-              <li>
-                Gra kończy się po ustalonym czasie, a wygrywa gracz z największą
-                liczbą punktów.
-              </li>
-            </ul>
-
-            <h2 className="text-xl font-semibold text-yellow-300">Cele:</h2>
-            <p className="leading-relaxed">
-              <strong>Łowcy:</strong> Znajdź i zdemaskuj wszystkie wampiry.
-              <br />
-              <strong>Wampiry:</strong> Przekonaj innych, że jesteś jednym z
-              łowców i znajdź innych wampirów.
+            <p className="mb-8">
+              Tip dla Ciebie:{" "}
+              <span className="font-semibold text-orange">
+                {user.character == "vampire"
+                  ? "Wampiry mają niepochamowaną potrzebę syczenia co jakiś czas. "
+                  : "Łowcy używają mowy nienawiści wobec tych jebanych wampirów i z natury nie łączą się w grupy. "}
+              </span>
+              Ale to tylko wierzchołek góry lodowej
             </p>
+            <p className="text-orange">
+              {user.character == "vampire" ? (
+                "Jako wampir, musisz szukać swoich i przekonać tych pierdolonych łowców, że jesteś jednym z nich - wtedy Cię nie złapią."
+              ) : (
+                <>
+                  Jako Łowca, musisz znaleźć wampira oraz unikać innych Łowców{" "}
+                  <span className="text-white">
+                    (konflikt interesów i te sprawy)
+                  </span>
+                </>
+              )}
+            </p>
+            {user.character == "vampire" ? (
+              <p className="mt-8">
+                Aby zidentyfikować innego wampira, masz tylko jedną szansę na
+                zapytanie “
+                <span className="font-semibold text-orange">
+                  Czy jesteś wampirem?
+                </span>
+                ”. Inni gracze będą Cię pytać o to samo -{" "}
+                <span className="font-semibold text-orange">
+                  pamiętaj, aby odpowiadać szczerze.
+                </span>
+              </p>
+            ) : (
+              <p className="mt-8">
+                Aby zidentyfikować wampira, masz tylko jedną szansę na zapytanie
+                “
+                <span className="font-semibold text-orange">
+                  Czy jesteś wampirem?
+                </span>
+                ”. Inni gracze będą Cię pytać o to samo -{" "}
+                <span className="font-semibold text-orange">
+                  pamiętaj, aby odpowiadać szczerze.
+                </span>
+              </p>
+            )}
+            {user.character == "vampire" ? (
+              <p className="mt-8">
+                Jeśli znajdziesz innego Wampira, otrzymujesz punkt i kończysz
+                grę. Jeśli trafiłeś na łowcę, przegrywasz i nie otrzymujesz
+                punktu. Cokolwiek się wydarzy, nie bierzesz już później udziału
+                w grze i nie odpowiadasz już na pytania o klasę.
+              </p>
+            ) : (
+              <p className="mt-8">
+                Jeśli znajdziesz wampira, otrzymujesz punkt i kończysz grę.
+                Jeśli trafiłeś na Łowcę, przegrywasz i nie otrzymujesz punktu.
+                Cokolwiek się wydarzy, nie bierzesz już później udziału w grze i
+                nie odpowiadasz już na pytania o klasę.
+              </p>
+            )}
+            <p className="mt-8">Gra kończy się po ustalonym czasie.</p>
           </div>
         </div>
       </div>
@@ -134,28 +171,39 @@ export default function Game3() {
             onClick={() => handleAddPoint(true)}
           >
             {user.character == "vampire"
-              ? "Znalazłem/am innego wampira"
-              : "Znalazłem/amm wampira!"}
+              ? "Znalazłem/am innego Wampira"
+              : "Znalazłem/am wampira!"}
           </button>
 
           <button
             type="button"
-            className="text-2xl w-full bg-orange p-4 font-medium rounded-lg text-center text-black"
+            className="text-2xl w-full border border-orange text-orange p-4 font-medium rounded-lg text-center text-black"
             onClick={() => handleAddPoint(false)}
           >
-            Znalazłem/am łowcę
+            {user.character == "vampire"
+              ? "Znalazłem/am łowcę"
+              : "Znalazłem/am innego Łowcę"}
           </button>
         </div>
       ) : (
         ""
       )}
       <div className="mt-8">
-        <Image
-          src="/images/skull8.png"
-          width={500}
-          height={500}
-          alt="pumpkin"
-        />
+        {user.character == "hunter" ? (
+          <Image
+            src="/images/hunter.png"
+            width={500}
+            height={500}
+            alt="pumpkin"
+          />
+        ) : (
+          <Image
+            src="/images/vampire.png"
+            width={500}
+            height={500}
+            alt="pumpkin"
+          />
+        )}
       </div>
     </div>
   );
