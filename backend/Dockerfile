@@ -7,6 +7,7 @@ RUN npm install
 
 COPY . .
 RUN npm run build
+RUN mkdir -p /app/uploads # Tworzenie folderu uploads
 
 FROM node:18-alpine
 

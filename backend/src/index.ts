@@ -35,9 +35,9 @@ db.on("error", (err) => {
   }
 });
 
-const uploadDir = "uploads/";
+const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
+  fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 const storage = multer.diskStorage({
@@ -131,8 +131,6 @@ app.post("/login", (req: Request, res: Response) => {
 app.post("/points", (req: Request, res: Response) => {
   const { name, user, game_mode } = req.body;
 
-  console.log(name, user, game_mode);
-
   const insert = `CALL AddPoint(?,?,?)`;
 
   db.query(insert, [user, name, game_mode], (err, results) => {
@@ -169,8 +167,9 @@ app.post("/upload", (req: any, res: any) => {
 
 app.get("/upload", (req, res) => {
   if (!fs.existsSync(uploadDir)) {
-    return res.status(404).json({ message: "brak zdjęć" });
+    return res.status(404).json({ message: "Brak zdjęć" });
   }
+
   fs.readdir(uploadDir, (err, files) => {
     if (err) {
       return res
@@ -181,7 +180,7 @@ app.get("/upload", (req, res) => {
     const fileUrls = files.map((file) => {
       return {
         filename: file,
-        url: `${req.protocol}://${req.get("host")}/${uploadDir}${file}`,
+        url: `${req.protocol}://${req.get("host")}/uploads/${file}`,
       };
     });
 
@@ -275,8 +274,6 @@ app.get("/player", async (req: Request, res: Response) => {
         .json({ error: "Wystąpił błąd wewnętrzny serwera" });
     }
 
-    console.log(results);
-
     res.status(200).json({ message: "Twój player", results });
   });
 });
@@ -330,7 +327,7 @@ app.get("/game_1", async (req: Request, res: Response) => {
   });
 });
 
-app.use("/uploads", express.static(path.resolve("uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.listen(PORT, () => {
   console.log(`Serwer działa na porcie ${PORT}`);

@@ -56,8 +56,8 @@ const Images = () => {
 
   const compressImage = async (image: File) => {
     const options = {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 800,
+      maxSizeMB: 5,
+      maxWidthOrHeight: 1600,
       useWebWorker: true,
     };
 
@@ -96,6 +96,7 @@ const Images = () => {
       setIsPhotoSending(false);
     } finally {
       setIsPhotoSending(false);
+      setPhoto(null);
     }
   };
 
@@ -144,12 +145,38 @@ const Images = () => {
 
   return (
     <div
-      className="w-full h-screen flex flex-col justify-start items-center gap-6"
+      className="w-full flex flex-col justify-start items-center gap-6"
       style={{ marginTop: "15vh" }}
     >
-      <div className="absolute left-10 top-10 text-xl">{user.name}</div>
-      <div className="absolute left-70 top-10 text-xl">{user.character}</div>
-      <div className="absolute left-80 top-10 text-xl">{user.points}</div>
+      <div className="w-full flex justify-between px-8 fixed top-0 bg-black py-6">
+        <div className="text-xl">{user.name}</div>
+        <div className="text-xl">{user.points}</div>
+        <div className="text-xl text-orange">#{user.character}</div>
+      </div>
+      <div
+        className="flex gap-4 justify-start w-full p-6"
+        onClick={() => router.push("/game")}
+      >
+        <svg
+          fill="#ffffff"
+          height="25px"
+          width="25px"
+          version="1.1"
+          id="Layer_1"
+          viewBox="0 0 330 330"
+          xmlSpace="preserve"
+          className="rotate-180"
+        >
+          <path
+            id="XMLID_222_"
+            d="M250.606,154.389l-150-149.996c-5.857-5.858-15.355-5.858-21.213,0.001
+	c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213
+	C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606
+	C255,161.018,253.42,157.202,250.606,154.389z"
+          />
+        </svg>
+        <p>Wróć</p>
+      </div>
 
       <div className="mb-10 flex flex-col text-center">
         <h1 className="text-2xl">Zdjęcia</h1>
@@ -161,47 +188,44 @@ const Images = () => {
           </p>
         )}
       </div>
-
-      <div>
+      <div className="grid grid-cols-3 gap-4 overflow-hidden">
         {photos.map((item: IImage, index) => (
-          <div key={index} className="p-4 relative">
-            <Image src={item.url} alt={item.filename} />
+          <div key={index} className="relative">
+            <img src={item.url} alt={item.filename} className="w-full h-auto" />
             <span
-              className="absolute top-4 left-4 bg-white p-1 rounded"
+              className="absolute top-1 left-1 w-full h-16"
               onClick={() => handleDownloadPhoto(item.url, item.filename)}
             >
-              <a href={item.url} download>
-                <svg
-                  width="20px"
-                  height="20px"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M8 22.0002H16C18.8284 22.0002 20.2426 22.0002 21.1213 21.1215C22 20.2429 22 18.8286 22 16.0002V15.0002C22 12.1718 22 10.7576 21.1213 9.8789C20.3529 9.11051 19.175 9.01406 17 9.00195M7 9.00195C4.82497 9.01406 3.64706 9.11051 2.87868 9.87889C2 10.7576 2 12.1718 2 15.0002L2 16.0002C2 18.8286 2 20.2429 2.87868 21.1215C3.17848 21.4213 3.54062 21.6188 4 21.749"
-                    stroke="#1C274C"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M12 2L12 15M12 15L9 11.5M12 15L15 11.5"
-                    stroke="#1C274C"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </a>
+              <a href={item.url} download></a>
             </span>
             {isPhotoSending || user.photo ? (
               ""
             ) : (
               <span
-                className="absolute top-4 right-4 bg-white px-1 rounded text-green-600 text-2xl"
+                className="text-center flex justify-center py-2"
                 onClick={() => handleAddPoint(item.url)}
               >
-                +
+                <svg
+                  fill="#ffffff"
+                  height="25px"
+                  width="25px"
+                  version="1.1"
+                  id="Capa_1"
+                  viewBox="0 0 471.701 471.701"
+                  xmlSpace="preserve"
+                >
+                  <g>
+                    <path
+                      d="M433.601,67.001c-24.7-24.7-57.4-38.2-92.3-38.2s-67.7,13.6-92.4,38.3l-12.9,12.9l-13.1-13.1
+		c-24.7-24.7-57.6-38.4-92.5-38.4c-34.8,0-67.6,13.6-92.2,38.2c-24.7,24.7-38.3,57.5-38.2,92.4c0,34.9,13.7,67.6,38.4,92.3
+		l187.8,187.8c2.6,2.6,6.1,4,9.5,4c3.4,0,6.9-1.3,9.5-3.9l188.2-187.5c24.7-24.7,38.3-57.5,38.3-92.4
+		C471.801,124.501,458.301,91.701,433.601,67.001z M414.401,232.701l-178.7,178l-178.3-178.3c-19.6-19.6-30.4-45.6-30.4-73.3
+		s10.7-53.7,30.3-73.2c19.5-19.5,45.5-30.3,73.1-30.3c27.7,0,53.8,10.8,73.4,30.4l22.6,22.6c5.3,5.3,13.8,5.3,19.1,0l22.4-22.4
+		c19.6-19.6,45.7-30.4,73.3-30.4c27.6,0,53.6,10.8,73.2,30.3c19.6,19.6,30.3,45.6,30.3,73.3
+		C444.801,187.101,434.001,213.101,414.401,232.701z"
+                    />
+                  </g>
+                </svg>
               </span>
             )}
           </div>
@@ -209,18 +233,36 @@ const Images = () => {
       </div>
 
       <div className="flex flex-col">
-        <input
-          type="file"
-          accept="image/*"
-          capture="environment"
-          onChange={handleFileChange}
-          className="text-2xl w-full mb-8 p-4 text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-center"
-        />
+        <div>
+          Otwórz aparat
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={handleFileChange}
+            className="text-2xl w-full mb-8 p-4 text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-center"
+          />
+        </div>
+        <div>
+          Otwórz galerię
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="text-2xl w-full mb-8 p-4 text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-center"
+          />
+        </div>
 
         {photo && (
           <div>
             <h2>Podgląd zdjęcia</h2>
-            <Image src={photo} alt="Zdjęcie" style={{ width: "100%" }} />
+            <Image
+              src={photo}
+              alt="Zdjęcie"
+              style={{ width: "100%" }}
+              width={400}
+              height={400}
+            />
           </div>
         )}
 

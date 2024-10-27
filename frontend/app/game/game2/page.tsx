@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/app/context/UserContext";
 import axios from "axios";
 import { bingoItems } from "@/app/data/bingo";
+import Image from "next/image";
 
 type BingoItem = {
   title: string;
@@ -92,24 +93,47 @@ export default function Game2() {
   }, [bingo]);
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center gap-6">
-      <div className="absolute left-10 top-10 text-xl">{user.name}</div>
-      <div className="absolute left-70 top-10 text-xl">{user.character}</div>
-      <div className="absolute left-80 top-10 text-xl">{user.points}</div>
-
+    <div className="w-full flex flex-col justify-between items-center mt-20">
+      <div className="w-full flex justify-between px-8 fixed top-0 bg-black py-6">
+        <div className="text-xl">{user.name}</div>
+        <div className="text-xl">{user.points}</div>
+        <div className="text-xl text-orange">#{user.character}</div>
+      </div>
+      <div
+        className="flex gap-4 justify-start w-full p-6"
+        onClick={() => router.push("/game")}
+      >
+        <svg
+          fill="#ffffff"
+          height="25px"
+          width="25px"
+          version="1.1"
+          id="Layer_1"
+          viewBox="0 0 330 330"
+          xmlSpace="preserve"
+          className="rotate-180"
+        >
+          <path
+            id="XMLID_222_"
+            d="M250.606,154.389l-150-149.996c-5.857-5.858-15.355-5.858-21.213,0.001
+	c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213
+	C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606
+	C255,161.018,253.42,157.202,250.606,154.389z"
+          />
+        </svg>
+        <p>Wróć</p>
+      </div>
       <div className="shadow-lg rounded-lg p-6 max-w-md">
         <div className="pb-6">
-          <h1 className="text-2xl font-semibold mb-4 text-center">
-            Halloween Bingo!
-          </h1>
-          <div className="text-center">
-            Twoim zadaniem jest bacznie obserwować, co dzieje się dookoła, i
-            zaznaczać na swojej karcie każdą sytuację, która faktycznie ma
-            miejsce.
-            <p className="p-1">
-              Osoba, która zaznaczy całą kartę, zostanie naszym Mistrzem Grozy i
-              otrzyma jeden punk! Zatem chwyć swoją kartę, obserwuj uważnie!
+          <h1 className="text-6xl font-semibold mb-12">Halloween Bingo!</h1>
+          <div className="flex flex-col gap-4">
+            <p>
+              {" "}
+              Często zdarza Ci się bacznie obserwować innych ludzi? Nie?
+              Najwyższa pora zacząć.
             </p>
+
+            <p>Zaznacz, co zobaczył_ś. </p>
           </div>
         </div>
 
@@ -118,12 +142,21 @@ export default function Game2() {
             bingo.map((card, index) => (
               <div
                 key={index}
-                className={`p-4 border-2 cursor-pointer text-center ${
-                  card.is_clicked ? "bg-lime-950 text-white" : "bg-gray-600"
+                className={`p-4 border-2 cursor-pointer text-center flex flex-col justify-center items-center ${
+                  card.is_clicked ? "bg-[#030c1b] text-white" : "bg-gray-600"
                 }`}
                 onClick={() => toggleBingoItem(index)}
               >
-                {card.title}
+                {card.is_clicked ? (
+                  <Image
+                    src="/images/check.png"
+                    width={50}
+                    height={50}
+                    alt="pumpkin"
+                  />
+                ) : (
+                  card.title
+                )}
               </div>
             ))}
         </div>
@@ -131,14 +164,22 @@ export default function Game2() {
       {!isPointAdded ? (
         <button
           type="button"
-          className="text-2xl w-full mb-8 p-4 text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-center"
+          className="text-2xl w-full bg-orange p-4 font-medium rounded-lg text-center text-black"
           onClick={handleAddPoint}
         >
-          Bingo gotowe!
+          Widziałem/am już wszystko
         </button>
       ) : (
         ""
       )}
+      <div className="">
+        <Image
+          src="/images/skull3.png"
+          width={500}
+          height={500}
+          alt="pumpkin"
+        />
+      </div>
     </div>
   );
 }

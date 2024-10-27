@@ -31,6 +31,8 @@ services:
       - db
     networks:
       - app-network
+    volumes:
+      - ./backend/uploads:/app/uploads
 
   frontend:
     build:
@@ -41,11 +43,15 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development # Zmieniamy na development
     depends_on:
       - backend
     networks:
       - app-network
+    volumes:
+      - ./frontend:/app # Mapowanie kodu źródłowego do kontenera
+      - /app/node_modules # Wykluczenie node_modules
+    command: ["npm", "run", "dev"]
 
 volumes:
   db_data:
