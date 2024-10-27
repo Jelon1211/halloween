@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "../context/UserContext";
 import axios from "axios";
+import Image from "next/image";
 
 interface IUser {
   id: number;
@@ -110,15 +111,38 @@ export default function Points() {
   };
 
   return (
-    <div
-      className="w-full h-screen flex flex-col justify-start items-center gap-6"
-      style={{ marginTop: "25vh" }}
-    >
-      <div className="absolute left-10 top-10 text-xl">{user.name}</div>
-      <div className="absolute left-70 top-10 text-xl">{user.character}</div>
-      <div className="absolute left-80 top-10 text-xl">{user.points}</div>
+    <div className="w-full flex flex-col flex flex-col justify-between items-center mt-20">
+      <div className="w-full flex justify-between px-8 fixed top-0 bg-black py-6">
+        <div className="text-xl">{user.name}</div>
+        <div className="text-xl">{user.points}</div>
+        <div className="text-xl text-orange">#{user.character}</div>
+      </div>
+      <div
+        className="flex gap-4 justify-start w-full p-6"
+        onClick={() => router.push("/game")}
+      >
+        <svg
+          fill="#ffffff"
+          height="25px"
+          width="25px"
+          version="1.1"
+          id="Layer_1"
+          viewBox="0 0 330 330"
+          xmlSpace="preserve"
+          className="rotate-180"
+        >
+          <path
+            id="XMLID_222_"
+            d="M250.606,154.389l-150-149.996c-5.857-5.858-15.355-5.858-21.213,0.001
+	c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213
+	C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606
+	C255,161.018,253.42,157.202,250.606,154.389z"
+          />
+        </svg>
+        <p>Wróć</p>
+      </div>
 
-      <h1 className="text-2xl fixed top-[15%]">Punktacja</h1>
+      <h1 className="text-2xl py-6">Punktacja</h1>
       <div className="w-full overflow-y-auto" style={{ maxHeight: "75vh" }}>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -178,6 +202,14 @@ export default function Points() {
               ))}
             </tbody>
           </table>
+          <div className="mt-8">
+            <Image
+              src="/images/skull9.png"
+              width={500}
+              height={500}
+              alt="pumpkin"
+            />
+          </div>
         </div>
       </div>
     </div>
