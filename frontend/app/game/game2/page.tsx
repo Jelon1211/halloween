@@ -133,7 +133,7 @@ export default function Game2() {
               Najwyższa pora zacząć.
             </p>
 
-            <p>Zaznacz, co zobaczył_ś. </p>
+            <p>Zaznacz, co zobaczyłeś/aś. </p>
           </div>
         </div>
 

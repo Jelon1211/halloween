@@ -88,13 +88,13 @@ export default function Game1() {
         <div className="text-lg flex flex-col gap-4">
           <p>Witamy!!!!!!!11</p>
           <p>
-            Pamiętasz tę jedną, bardzo dziwną z firm, do których wysłał_ś CV?
+            Pamiętasz tę jedną, bardzo dziwną z firm, do których wysłałeś/aś CV?
             Wtedy Ci nie odpisaliśmy, ale okazuje się, że mail trafił do spamu
             czy coś. Udało się!
           </p>
           <p>
             Przechodzisz do kolejnego etapu rekrutacji. Zadanie jest proste i
-            jasne. Jak nie, to
+            jasne. Jak nie, to{" "}
             <span className="text-orange font-semibold">
               uważaj, bo będziesz następny. Nasza firma ma wielu pracowników.
             </span>

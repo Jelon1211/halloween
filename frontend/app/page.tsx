@@ -12,7 +12,6 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    localStorage.clear();
     const name = localStorage.getItem("name");
     if (name) {
       router.push("/game");
